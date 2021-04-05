@@ -60,9 +60,9 @@ void readAccel(void *parameter) {
     sensors_event_t event;
     accel.getEvent(&event);
     r.t = millis();
-    r.x = event.acceleration.x;
-    r.y = event.acceleration.y;   
-    r.z = event.acceleration.z;
+    r.x = event.acceleration.x / 9.8;
+    r.y = event.acceleration.y / 9.8;   
+    r.z = event.acceleration.z / 9.8;
     
     // sending data into queue
     if (xQueueSend(readingQueue, (void *)&r, 10) != pdTRUE) {
@@ -85,8 +85,6 @@ void handleData(void *parameter) {
       dtostrf(r.y, 7, 3, ystr);
       dtostrf(r.z, 7, 3, zstr);
       
-      strcat(str, tstr);
-      strcat(str, ",");
       strcat(str, xstr);
       strcat(str, ",");
       strcat(str, ystr);
