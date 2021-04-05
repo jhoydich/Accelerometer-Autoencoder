@@ -1,0 +1,49 @@
+<html>
+    <head>
+        <title>&#127829;</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" type="text/css" href="style.css">
+    </head>
+
+    <body class="body">
+
+        <header>
+            <h1 class="header">&#127829; 3d Printer Autoencoder &#127829;</h1>
+        </header>
+
+        <div class="article-container">
+            <div class="data-container">
+                <div class="datadisp">
+                    <h3>Number of Anomalies:</h3> 
+                    
+                    <span id="tempValue" class="temp-text">
+    
+                    </span>
+                </div>
+            </div>
+
+            
+    </body>
+
+    <script>
+               
+   
+       // refreshes temperature value
+       function getTemp() {
+           var xhttp = new XMLHttpRequest();
+           xhttp.onreadystatechange = function() {
+               if (this.readyState == 4 && this.status == 200) {
+                   document.getElementById("tempValue").innerHTML = this.responseText;                   
+                }
+               }
+           xhttp.open("GET","getTemp", true);
+           xhttp.send();
+       };
+   
+       // runs refresh for temp over interval     
+       setInterval(function () {
+           getTemp();
+       }, 1000);
+       </script>
+
+</html>

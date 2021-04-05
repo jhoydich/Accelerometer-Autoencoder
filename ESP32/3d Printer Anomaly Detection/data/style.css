@@ -1,0 +1,67 @@
+h3 {
+  text-align: center;
+}
+
+
+.body {
+  background-color:#F4F6F7;
+  height: 100vh;
+}
+
+.article-container {
+  display: flex;
+  flex-direction: row;
+}
+
+
+.article {
+  flex: 1;
+  padding: 20px;
+  text-align:center;
+  height: 30vh;
+  
+  
+}
+.data-container {
+    flex: 1;
+    height: 30vh;
+}
+.datadisp {
+  text-align: center;
+  border: 2px solid grey;
+  border-radius: 5px;
+  background-color: white;
+  height: 25vh;
+  width: 25vh;
+  margin: auto;
+
+}
+
+.temp-text {
+    font-size: 60px;
+    margin: auto;
+}
+
+.header {
+  font-family: cursive;
+  text-align: center;
+  padding: 10px 20px 0px 10px;
+}
+
+.button{
+  padding: 10px 10px 10px 10px;
+  margin: 10px;
+  background: #FAA;
+  
+  
+}
+.form-div{
+  padding: 5px 5px;
+  vertical-align: text-bottom;
+}
+
+.tempChart {
+  width: 90vw;
+  margin: auto;
+}
+

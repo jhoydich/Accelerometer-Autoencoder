@@ -1,3 +1,7 @@
+// Created by: Jeremiah Hoydich
+// Based off of various tensorflow lite tutorials / readings
+
+
 #include <Adafruit_Sensor.h>
 #include <Adafruit_ADXL343.h>
 #include <Arduino.h>
@@ -7,6 +11,8 @@
 #include "tensorflow/lite/micro/micro_error_reporter.h"
 #include "tensorflow/lite/micro/micro_interpreter.h"
 #include "tensorflow/lite/schema/schema_generated.h"
+#include "Wifi.h"
+
 
 // Globals, used for compatibility with Arduino-style sketches.
 namespace {
@@ -32,10 +38,17 @@ int count = 0;
 float t1, t2;
 
 int logLevel = 0;
+
+// wifi values
+const char* ssid = "3d Printer Autoencoder";
+const char* pwd = "pa55w0rD!";
 }  // namespace
 
-// The name of this function is important for Arduino compatibility.
+
 void setup() {
+  WiFi.softAP(ssid, pwd);
+
+
   // Set up logging. Google style is to avoid globals or statics because of
   // lifetime uncertainty, but since this has a trivial destructor it's okay.
   // NOLINTNEXTLINE(runtime-global-variables)
