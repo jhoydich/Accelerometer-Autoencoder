@@ -1,12 +1,14 @@
 // Created by: Jeremiah Hoydich
 // Based off of various tensorflow lite tutorials / readings
 
-
+#include "accel_model.h"
 #include <Adafruit_Sensor.h>
 #include <Adafruit_ADXL343.h>
 #include <Arduino.h>
+#include <AsyncTCP.h>
+#include <ESPAsyncWebServer.h>
+#include "SPIFFS.h"
 #include <TensorFlowLite_ESP32.h>
-#include "accel_model.h"
 #include "tensorflow/lite/micro/all_ops_resolver.h"
 #include "tensorflow/lite/micro/micro_error_reporter.h"
 #include "tensorflow/lite/micro/micro_interpreter.h"
@@ -42,11 +44,32 @@ int logLevel = 0;
 // wifi values
 const char* ssid = "3d Printer Autoencoder";
 const char* pwd = "pa55w0rD!";
+
 }  // namespace
+
+AsyncWebServer server(80);
+IPAddress local_IP(192, 168, 4, 1);
+
+// Replaces placeholder with LED state value
+String processor(const String& var){
+  return "String";
+}
+
 
 
 void setup() {
+  
+  // Initialize SPIFFS
+  if(!SPIFFS.begin(true)){
+    return;
+  }
+
   WiFi.softAP(ssid, pwd);
+
+  // Route for root / web page
+  server.on("/", HTTP_GET, [](AsyncWebServerRequest *request){
+    request->send(SPIFFS, "/index.html", String(), false, processor);
+  });
 
 
   // Set up logging. Google style is to avoid globals or statics because of
@@ -88,8 +111,6 @@ void setup() {
   // Initializing the accelerometer
   if(!accel.begin())
   {
-    // There was a problem detecting the ADXL343 ... check your connections
-    Serial.println("Ooops, no ADXL343 detected ... Check your wiring!");
     while(1);
   }
 
@@ -97,10 +118,7 @@ void setup() {
   accel.setRange(ADXL343_RANGE_2_G);
   accel.setDataRate(ADXL343_DATARATE_200_HZ);
 
-  // Setting built in led
-  pinMode(LED_BUILTIN, HIGH);
-  
-  // getting current time
+  server.begin();
   t1 = millis();
 }
 
@@ -160,13 +178,9 @@ void loop() {
       diff = abs(initSum - finalSum) / abs(initSum);
 
       if (diff > .1) {
-        pinMode(LED_BUILTIN, HIGH);
         TF_LITE_REPORT_ERROR(error_reporter, "Diff: %f ", diff);
         TF_LITE_REPORT_ERROR(error_reporter, "Input data: %f, %f, %f \n", accelSum[0], accelSum[1], accelSum[2]);
-        TF_LITE_REPORT_ERROR(error_reporter, "Output data: %f, %f, %f \n", output->data.f[0], output->data.f[1], output->data.f[2]);
-        
-        delay(3000);
-        pinMode(LED_BUILTIN, LOW);
+        TF_LITE_REPORT_ERROR(error_reporter, "Output data: %f, %f, %f \n", output->data.f[0], output->data.f[1], output->data.f[2]);       
       }
 
 
